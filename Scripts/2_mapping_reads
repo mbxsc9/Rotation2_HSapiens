@@ -1,0 +1,83 @@
+#!/bin/bash
+#SBATCH --partition=defq
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=32
+#SBATCH --mem=100g
+#SBATCH --time=12:00:00
+#SBATCH --job-name=mapping_reads
+#SBATCH --output=/gpfs01/share/BioinfMSc/life4136_2526/rotation2/group4/HSapiens/Scripts/Logs/slurm-%x-%j.out
+#SBATCH --error=/gpfs01/share/BioinfMSc/life4136_2526/rotation2/group4/HSapiens/Scripts/Logs/slurm-%x-%j.err
+#SBATCH --mail-type=ALL
+#SBATCH --mail-user=mbxsc9@nottingham.ac.uk
+
+#Activates the conda environment
+source $HOME/.bash_profile
+conda activate rotation2
+
+##output directory
+OUTPUT_DIR_ADENO=/share/BioinfMSc/life4136_2526/rotation2/group4/HSapiens/alignments/adeno_align
+OUTPUT_DIR_HEPATO=/share/BioinfMSc/life4136_2526/rotation2/group4/HSapiens/alignments/hepato_align
+
+##index directory
+INDEX_DIR=/share/BioinfMSc/life4136_2526/rotation2/group4/HSapiens/HSapiens_reference/GRCh38_index
+
+##input directory
+INPUT_DIR_ADENO=/share/BioinfMSc/life4136_2526/rotation2/group4/HSapiens/adeno_carcinoma
+INPUT_DIR_HEPATO=/share/BioinfMSc/life4136_2526/rotation2/group4/HSapiens/hepatocellular_carcinoma
+
+##Adeno samples
+SAMPLE1_ADENO=ERR1404760
+SAMPLE2_ADENO=ERR1404761
+SAMPLE3_ADENO=ERR1404762
+SAMPLE4_ADENO=ERR1404763
+SAMPLE5_ADENO=ERR1404764
+SAMPLE6_ADENO=ERR1404765
+SAMPLE7_ADENO=ERR1404766
+SAMPLE8_ADENO=ERR1404767
+SAMPLE9_ADENO=ERR1404768
+SAMPLE10_ADENO=ERR1404769
+SAMPLE11_ADENO=ERR1404770
+SAMPLE12_ADENO=ERR1404771
+SAMPLE13_ADENO=ERR1404772
+SAMPLE14_ADENO=ERR1404773
+SAMPLE15_ADENO=ERR1404774
+
+## Hepatocellular samples
+SAMPLE1_HEPATO=ERR1404781
+SAMPLE2_HEPATO=ERR1404782
+SAMPLE3_HEPATO=ERR1404783
+SAMPLE4_HEPATO=ERR1404784
+
+
+##RUN STAR ALIGNMENT FOR ADENO
+##input files
+cd $INPUT_DIR_ADENO
+
+##RUN STAR ALIGNMENT FOR ADENO
+##input files
+cd $INPUT_DIR_ADENO
+
+for samples in $SAMPLE1_ADENO $SAMPLE2_ADENO $SAMPLE3_ADENO $SAMPLE4_ADENO $SAMPLE5_ADENO $SAMPLE6_ADENO \
+$SAMPLE7_ADENO $SAMPLE8_ADENO $SAMPLE9_ADENO $SAMPLE10_ADENO $SAMPLE11_ADENO \
+$SAMPLE12_ADENO $SAMPLE13_ADENO $SAMPLE14_ADENO $SAMPLE15_ADENO
+do
+STAR --runThreadN 32 --genomeDir $INDEX_DIR --quantMode GeneCounts \
+--readFilesIn ${samples}_1.fastq.gz ${samples}_2.fastq.gz --readFilesCommand zcat 
+--outSAMtype BAM SortedByCoordinate --outFileNamePrefix $OUTPUT_DIR_ADENO/${samples}_  
+done
+
+## RUN STAR ALIGNMENT FOR HEPATOCELLULAR
+## input files
+cd $INPUT_DIR_HEPATO
+
+for samples in $SAMPLE1_HEPATO $SAMPLE2_HEPATO $SAMPLE3_HEPATO $SAMPLE4_HEPATO
+do
+STAR --runThreadN 32 --genomeDir $INDEX_DIR --quantMode GeneCounts \
+--readFilesIn ${samples}_1.fastq.gz ${samples}_2.fastq.gz \
+--readFilesCommand zcat --outSAMtype BAM SortedByCoordinate \
+--outFileNamePrefix $OUTPUT_DIR_HEPATO/${samples}_
+done
+
+conda deactivate
+
