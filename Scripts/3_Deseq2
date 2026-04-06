@@ -1,0 +1,16 @@
+#install.packages("BiocManager") #Installs package BiocManager if required
+#BiocManager::install("DESeq2") #Installs package DESeq2 if required
+#install.packages("pheatmap") #Installs package pheatmap if required
+#install.packages("RColorBrewer") #Installs package RColourBrewer if required
+#install.packages("ggrepel")
+#install.packages("devtools")
+#devtools::install_github("stephenturner/annotables")
+
+library(pheatmap) #Loads heatmap package
+library(DESeq2) #Loads DESeq2 package
+library(RColorBrewer) #Loads RColorBrewer
+library(tidyverse)
+library(ggrepel)
+library(annotables)
+library(dbplyr)
+
